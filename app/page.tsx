@@ -19,11 +19,19 @@ type MenuItem = {
   image?: string;
 };
 
+type Subcategory = {
+  id: string;
+  _id?: string;
+  title: LocalizedText;
+  items: MenuItem[];
+};
+
 type Category = {
   id: string;
   title: LocalizedText;
   imageLabel: LocalizedText;
   image?: string;
+  subcategories?: Subcategory[];
   items: MenuItem[];
 };
 
@@ -70,6 +78,94 @@ export default function Home() {
 
     return text?.[lang] || text?.pl || text?.en || "";
   };
+
+  const renderMenuItem = (item: MenuItem, key: string) => (
+    <div
+      key={key}
+      className="flex items-start gap-3 rounded-[10px] border border-black/10 bg-[#efefef] px-2 py-2 shadow-[0_1px_0_rgba(0,0,0,0.05)]"
+    >
+      <div className="relative h-[74px] w-[74px] shrink-0 overflow-hidden rounded-[10px] border border-black/15 bg-white">
+        <Image
+          src={item.image || defaultProductImage}
+          alt={getText(item.name)}
+          fill
+          className="object-cover"
+          sizes="74px"
+        />
+      </div>
+
+      <div className="min-w-0 flex-1 pt-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <h3
+            className="text-[18px] font-black leading-6 text-black"
+            style={{ fontFamily: "Georgia, serif" }}
+          >
+            {getText(item.name)}
+          </h3>
+
+          {item.badge && (
+            <span
+              className={`rounded-full px-2 py-[2px] text-[10px] font-bold uppercase ${
+                item.badge === "Premium"
+                  ? "bg-amber-500 text-white"
+                  : item.badge === "Best Seller"
+                  ? "bg-green-600 text-white"
+                  : "bg-sky-600 text-white"
+              }`}
+            >
+              {item.badge}
+            </span>
+          )}
+        </div>
+
+        <p className="mt-1 text-[11px] leading-4 text-black/60">
+          {getText(item.description)}
+        </p>
+      </div>
+
+      <div className="min-w-[92px] shrink-0 pt-1 text-right">
+        {item.prices && item.prices.length > 0 ? (
+          <div className="space-y-1">
+            {item.price && (
+              <div className="flex items-center justify-end gap-3">
+                <span
+                  className="whitespace-nowrap text-[18px] font-bold text-[#ff6d6d]"
+                  style={{ fontFamily: "Georgia, serif" }}
+                >
+                  {item.price}
+                </span>
+              </div>
+            )}
+
+            {item.prices.map((priceOption, priceIndex) => (
+              <div
+                key={priceOption._id || priceIndex}
+                className="flex items-center justify-between gap-3"
+              >
+                <span className="whitespace-nowrap text-[13px] font-bold text-black/75">
+                  {priceOption.label}
+                </span>
+
+                <span
+                  className="whitespace-nowrap text-[18px] font-bold text-[#ff6d6d]"
+                  style={{ fontFamily: "Georgia, serif" }}
+                >
+                  {priceOption.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <span
+            className="text-[18px] font-bold text-[#ff6d6d]"
+            style={{ fontFamily: "Georgia, serif" }}
+          >
+            {item.price}
+          </span>
+        )}
+      </div>
+    </div>
+  );
 
   useEffect(() => {
     async function loadMenu() {
@@ -311,94 +407,35 @@ export default function Home() {
                   </a>
                 </div>
 
-                <div className="space-y-2">
-                  {category.items.map((item, index) => (
-                    <div
-                      key={`${category.id}-${index}`}
-                      className="flex items-start gap-3 rounded-[10px] border border-black/10 bg-[#efefef] px-2 py-2 shadow-[0_1px_0_rgba(0,0,0,0.05)]"
-                    >
-                      <div className="relative h-[74px] w-[74px] shrink-0 overflow-hidden rounded-[10px] border border-black/15 bg-white">
-                        <Image
-                          src={item.image || defaultProductImage}
-                          alt={getText(item.name)}
-                          fill
-                          className="object-cover"
-                          sizes="74px"
-                        />
-                      </div>
+                <div className="space-y-4">
+                  {category.subcategories &&
+                  category.subcategories.length > 0 ? (
+                    category.subcategories.map((subcategory) => (
+                      <div key={subcategory.id} className="space-y-2">
+                        <h3
+                          className="px-2 text-[22px] font-black uppercase tracking-wide text-black"
+                          style={{ fontFamily: "Georgia, serif" }}
+                        >
+                          {getText(subcategory.title)}
+                        </h3>
 
-                      <div className="min-w-0 flex-1 pt-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3
-                            className="text-[18px] font-black leading-6 text-black"
-                            style={{ fontFamily: "Georgia, serif" }}
-                          >
-                            {getText(item.name)}
-                          </h3>
-
-                          {item.badge && (
-                            <span
-                              className={`rounded-full px-2 py-[2px] text-[10px] font-bold uppercase ${
-                                item.badge === "Premium"
-                                  ? "bg-amber-500 text-white"
-                                  : item.badge === "Best Seller"
-                                  ? "bg-green-600 text-white"
-                                  : "bg-sky-600 text-white"
-                              }`}
-                            >
-                              {item.badge}
-                            </span>
+                        <div className="space-y-2">
+                          {subcategory.items.map((item, index) =>
+                            renderMenuItem(
+                              item,
+                              `${subcategory.id}-${index}`
+                            )
                           )}
                         </div>
-
-                        <p className="mt-1 text-[11px] leading-4 text-black/60">
-                          {getText(item.description)}
-                        </p>
                       </div>
-
-                      <div className="min-w-[92px] shrink-0 pt-1 text-right">
-                        {item.prices && item.prices.length > 0 ? (
-                          <div className="space-y-1">
-                            {item.price && (
-                              <div className="flex items-center justify-end gap-3">
-                                <span
-                                  className="whitespace-nowrap text-[18px] font-bold text-[#ff6d6d]"
-                                  style={{ fontFamily: "Georgia, serif" }}
-                                >
-                                  {item.price}
-                                </span>
-                              </div>
-                            )}
-
-                            {item.prices.map((priceOption, priceIndex) => (
-                              <div
-                                key={priceOption._id || priceIndex}
-                                className="flex items-center justify-between gap-3"
-                              >
-                                <span className="whitespace-nowrap text-[13px] font-bold text-black/75">
-                                  {priceOption.label}
-                                </span>
-
-                                <span
-                                  className="whitespace-nowrap text-[18px] font-bold text-[#ff6d6d]"
-                                  style={{ fontFamily: "Georgia, serif" }}
-                                >
-                                  {priceOption.value}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <span
-                            className="text-[18px] font-bold text-[#ff6d6d]"
-                            style={{ fontFamily: "Georgia, serif" }}
-                          >
-                            {item.price}
-                          </span>
-                        )}
-                      </div>
+                    ))
+                  ) : (
+                    <div className="space-y-2">
+                      {category.items.map((item, index) =>
+                        renderMenuItem(item, `${category.id}-${index}`)
+                      )}
                     </div>
-                  ))}
+                  )}
                 </div>
               </section>
             ))}

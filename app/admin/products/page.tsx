@@ -124,7 +124,11 @@ export default function ProductsPage() {
       ) : (
         <div className="space-y-16">
           {filteredMenu.map((cat, i) => {
-            const products = cat.products.filter(p => p.name.en.toLowerCase().includes(searchQuery.toLowerCase()));
+            const products = cat.products.filter(
+  (p) =>
+    !p.subcategory &&
+    p.name.en.toLowerCase().includes(searchQuery.toLowerCase())
+);
             const subcategories = cat.subcategories.map(sub => ({
               ...sub,
               products: sub.products.filter(p => p.name.en.toLowerCase().includes(searchQuery.toLowerCase()))
