@@ -98,9 +98,12 @@ export default function Home() {
         <div className="flex flex-wrap items-center gap-2">
           <h3
             className="text-[18px] font-black leading-6 text-black"
-            style={{ fontFamily: "Georgia, serif" }}
+           style={{
+            fontFamily: "Georgia, serif",
+            whiteSpace: "pre-line",
+            }}
           >
-            {getText(item.name)}
+           {getText(item.name)}
           </h3>
 
           {item.badge && (

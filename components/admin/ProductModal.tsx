@@ -200,8 +200,7 @@ export default function ProductModal({
                     <label className="ml-4 text-[10px] font-black uppercase tracking-widest text-white/40">
                       Name (PL)
                     </label>
-                    <input
-                      type="text"
+                    <textarea
                       required
                       value={formData.name.pl}
                       onChange={(e) =>
@@ -210,7 +209,7 @@ export default function ProductModal({
                           name: { ...formData.name, pl: e.target.value },
                         })
                       }
-                      className="w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-4 font-bold text-white transition-all focus:border-[#c8a24a]/50 focus:outline-none"
+                      className="min-h-[90px] w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-6 py-4 font-bold text-white transition-all focus:border-[#c8a24a]/50 focus:outline-none"
                     />
                   </div>
 
@@ -218,8 +217,7 @@ export default function ProductModal({
                     <label className="ml-4 text-[10px] font-black uppercase tracking-widest text-white/40">
                       Name (EN)
                     </label>
-                    <input
-                      type="text"
+                    <textarea
                       required
                       value={formData.name.en}
                       onChange={(e) =>
@@ -228,7 +226,7 @@ export default function ProductModal({
                           name: { ...formData.name, en: e.target.value },
                         })
                       }
-                      className="w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-4 font-bold text-white transition-all focus:border-[#c8a24a]/50 focus:outline-none"
+                      className="min-h-[90px] w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-6 py-4 font-bold text-white transition-all focus:border-[#c8a24a]/50 focus:outline-none"
                     />
                   </div>
                 </div>
